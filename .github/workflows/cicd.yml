@@ -9,17 +9,14 @@ env:
     HEROKU_APP: ${{ secrets.HEROKU_APP }} 
     
 jobs:
-  myci: 
+  myci:
     runs-on: ubuntu-latest
     container: 
       image: golang:latest
     steps:
-      uses: actions/checkout@v2
-      - name: Set up Go
-        uses: actions/setup-go@v2
-      - name: Verify dependencies
-        run: go mod verify
-      - name: Build
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - run: go mod verify
       - run: go build -v ./...
       
   deploy:
