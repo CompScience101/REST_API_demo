@@ -10,7 +10,8 @@ env:
     
 jobs:
   deploy:
-    runs-on: ruby-latest
+    container:
+      image: ruby-latest
     steps: 
       - uses: actions/checkout@v2
       - run: apt-get update -qy
