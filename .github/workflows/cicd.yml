@@ -1,0 +1,19 @@
+name: CI/CD for REST API demo for resume
+
+on: 
+  push:
+    branches:
+      - master
+env:
+    HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    HEROKU_APP: ${{ secrets.HEROKU_APP }} 
+    
+jobs:
+  deploy:
+    runs-on: ruby-latest
+    steps: 
+      - uses: actions/checkout@v2
+      - run: apt-get update -qy
+      - run: apt-get install -y ruby-dev
+      - run: gem install dpl
+      - run: dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
