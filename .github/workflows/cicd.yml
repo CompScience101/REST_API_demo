@@ -12,7 +12,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     container:
-      image: ruby-latest
+      image: ruby:latest
     steps: 
       - uses: actions/checkout@v2
       - run: apt-get update -qy
