@@ -32,7 +32,7 @@ func health (c *gin.Context) { // monitor health of api
 	fmt.Printf("replied to client health check with success status.")
 }
 func test (c *gin.Context){
-	c.JSON(http.StatusOK, gin.H{"test": "testing connection", "test2": "redeploy"})
+	c.JSON(http.StatusOK, gin.H{"test": "testing connection", "test2": "github actions"})
 }
 /*
 func createbook (){
