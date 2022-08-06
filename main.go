@@ -32,7 +32,7 @@ func health (c *gin.Context) { // monitor health of api
 	fmt.Printf("replied to client health check with success status.")
 }
 func test (c *gin.Context){
-	c.JSON(http.StatusOK, gin.H{"test": "testing connection", "test2": "github actions"})
+	c.JSON(http.StatusOK, gin.H{"test": "testing connection", "test2": "github actions ci"})
 }
 /*
 func createbook (){
@@ -184,12 +184,18 @@ func main() { // setup router and api
 	log.Fatal("could not connect to db");
   } 
   fmt.Println("db connection made")  
-  db.Migrator().CreateTable(&Book{})
-  bool := db.Migrator().HasTable(&Book{})
+  bool := db.Migrator().HasTable(&Book{})//check status
   if(bool == true){
-	fmt.Println("created db table(s)")
+	
+	fmt.Println("already created db table(s)")
   }else{
-	fmt.Println("failed to create db table(s)")
+    db.Migrator().CreateTable(&Book{})
+	bool := db.Migrator().HasTable(&Book{})
+	if(bool == true){
+		fmt.Println("created db table(s)")
+	}else{
+		fmt.Println("failed to create db table(s)")
+	}
   }
   fmt.Println("preparing router") 
   port := os.Getenv("PORT")
