@@ -30,14 +30,14 @@ var books []Book
 var db *gorm.DB
 
 func health(c *gin.Context) { // monitor health of api
-	c.JSON(http.StatusOK, nil)
+	c.JSON(http.StatusNoContent, nil)
 	fmt.Printf("replied to client health check with success status.")
 }
 func test(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"test": "testing connection", "test2": "github actions ci"})
 }
 
-func createbook(c *gin.Context) {
+func createbook(c *gin.Context) { //not worrying about rejecting duplicate books, since library can have duplicates
 	var myjson Book
 	if err := c.BindJSON(&myjson); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
@@ -72,13 +72,20 @@ func getbooks(c *gin.Context) {
 	fmt.Printf("retrieved all books. sent client response \n")
 	return
 }
+func updatebookput(c *gin.Context) {
+	result := db.Find(&books)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
+		fmt.Printf("db error while retrieving all books")
+		return
+	}
+
+}
 
 /*
 func getbook (){
 
 }
-
-func updatebook() {}
 
 func deletebook {}
 
@@ -129,12 +136,14 @@ func main() { // setup router and api
 	r.GET("/", test)
 	r.POST("/api/createbook", createbook)
 	r.GET("/api/getbooks/", getbooks)
+	r.PUT("/api/updatebook/{id}", updatebookput)
 	/*
-		    r.GET("/api/getbook/{id}", getbook)
-			  r.PUT("/api/updatebook/{id}", updatebook)
-			  r.DELETE("/api/deletebook/{id}", deletebook)
+
+
+	   r.DELETE("/api/deletebook/{id}", deletebook)
+	   r.PATCH("/api/updatebook/patch/{id}", updatebookpatch)
 	*/
-	//r.PATCH("/api/updatebook/patch/{id}", updatebookpatch)
+	//r.GET("/api/getbook/{id}", getbook)
 
 	/* test
 	   s := "This,is,a,delimited,string"
