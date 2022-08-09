@@ -1,0 +1,226 @@
+{
+	"info": {
+		"_postman_id": "5df7499d-ae88-44dd-97a0-da99c3139175",
+		"name": "REST-API-DEMO",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14041485"
+	},
+	"item": [
+		{
+			"name": "health",
+			"request": {
+				"method": "HEAD",
+				"header": [],
+				"url": {
+					"raw": "{{heroku}}/api/health",
+					"host": [
+						"{{heroku}}"
+					],
+					"path": [
+						"api",
+						"health"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "health",
+					"originalRequest": {
+						"method": "HEAD",
+						"header": [],
+						"url": {
+							"raw": "{{heroku}}/api/health",
+							"host": [
+								"{{heroku}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "test-home",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"isbn\": \"ajdkljklajdljlsdlkfj\", \"title\": \"Greatest Cook on Earth\", \"author_name\":\"Silver Surfer\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local}}/api/createbook",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"api",
+						"createbook"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "create",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"isbn\": \"ajdkljklajdljlsdlkfj\", \"title\": \"Greatest Cook on Earth\", \"author_name\":\"Stanley Lee\" }"
+						},
+						"url": {
+							"raw": "{{heroku}}/api/createbook",
+							"host": [
+								"{{heroku}}"
+							],
+							"path": [
+								"api",
+								"createbook"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n    \"isbn\": \"ajdkljklajdljlsdlkfj\",\r\n    \"title\": \"Greatest Cook on Earth\",\r\n    \"author_name\": \"Stanley Lee\",\r\n    \"ID\": 2,\r\n    \"CreatedAt\": \"2022-08-07T21:19:14.8213596-04:00\",\r\n    \"UpdatedAt\": \"2022-08-07T21:19:14.8213596-04:00\",\r\n    \"DeletedAt\": null\r\n}"
+				}
+			]
+		},
+		{
+			"name": "All books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local}}/api/getbooks",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"api",
+						"getbooks"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "all books",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/getbooks",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"getbooks"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "[\r\n    {\r\n        \"isbn\": \"ajdkljklajdljlsdlkfj\",\r\n        \"title\": \"Greatest Cook on Earth\",\r\n        \"author_name\": \"Tony Stark\",\r\n        \"ID\": 1,\r\n        \"CreatedAt\": \"2022-08-07T21:18:51.994608-04:00\",\r\n        \"UpdatedAt\": \"2022-08-07T21:18:51.994608-04:00\",\r\n        \"DeletedAt\": null\r\n    },\r\n    {\r\n        \"isbn\": \"ajdkljklajdljlsdlkfj\",\r\n        \"title\": \"Greatest Cook on Earth\",\r\n        \"author_name\": \"Stanley Lee\",\r\n        \"ID\": 2,\r\n        \"CreatedAt\": \"2022-08-07T21:19:14.821359-04:00\",\r\n        \"UpdatedAt\": \"2022-08-07T21:19:14.821359-04:00\",\r\n        \"DeletedAt\": null\r\n    }\r\n]"
+				}
+			]
+		},
+		{
+			"name": "Update Book",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"isbn\": \"ajdkljklajdljlsdlkfj\", \"title\": \"Greatest Cook on Earth\",\"author_name\": \"Stanley Lee\",}"
+				},
+				"url": {
+					"raw": "{{local}}/api/updatebook/",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"api",
+						"updatebook",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Update Book",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"isbn\": \"ajdkljklajdljlsdlkfj\", \"title\": \"Greatest Cartoon Book\",\"author_name\": \"Stanley Lee\"}"
+						},
+						"url": {
+							"raw": "{{local}}/api/updatebook/2",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"updatebook",
+								"2"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n    \"isbn\": \"ajdkljklajdljlsdlkfj\",\r\n    \"title\": \"Greatest Cartoon Book\",\r\n    \"author_name\": \"Stanley Lee\",\r\n    \"ID\": 2,\r\n    \"CreatedAt\": \"0001-01-01T00:00:00Z\",\r\n    \"UpdatedAt\": \"2022-08-09T14:53:25.4136633-04:00\",\r\n    \"DeletedAt\": null\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete Book",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{local}}/api/deletebook/2",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"api",
+						"deletebook",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
