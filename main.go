@@ -1,10 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	//"text/template"
@@ -62,8 +64,7 @@ func getbooks(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
 		fmt.Printf("db error while retrieving all books")
 		return
-	}
-	if result == nil {
+	} else if books == nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "no records available"})
 		fmt.Printf("db error, no books while retrieving all books")
 		return
@@ -73,13 +74,78 @@ func getbooks(c *gin.Context) {
 	return
 }
 func updatebookput(c *gin.Context) {
-	result := db.Find(&books)
-	if result.Error != nil {
+	var myjson Book
+	if err := c.BindJSON(&myjson); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
+		fmt.Printf("Updatebook invalid request error: %v", err)
+		return
+	}
+	//convert id
+	id := c.Param("id")
+	idparse, err := strconv.ParseUint(id, 10, 32)
+	myjson.ID = uint(idparse)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please send a int for book id, for updating book."})
+		fmt.Println("Incorrect book id formatting, for updating book. error ", string(err.Error()))
+	}
+
+	//find book
+	var mybook Book
+	result := db.First(&mybook, id)
+	if result.Error != nil && errors.Is(result.Error, gorm.ErrRecordNotFound) { //no book db error
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
+		fmt.Println("db error while retrieving book id:", id, " to update it. Book doesn't exist.")
+		return
+	} else if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) { //other db error
 		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
-		fmt.Printf("db error while retrieving all books")
+		fmt.Println("db error while retrieving book id:", id, " to update it. Error was: ", result.Error.Error())
 		return
 	}
 
+	result = db.Save(&myjson)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
+		fmt.Printf("updatebookput internal error while updating book in db")
+		return
+	}
+	c.JSON(http.StatusOK, myjson)
+	fmt.Printf("updatebookput updated book. sent client response")
+
+}
+
+func deletebook(c *gin.Context) {
+
+	//convert id
+	id := c.Param("id")
+	idparse, err := strconv.ParseUint(id, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please send a int for book id, to delete book."})
+		fmt.Println("Incorrect book id formatting, for deleting book. error ", string(err.Error()))
+		return
+	}
+	// find book
+	var mybook Book
+	result := db.First(&mybook, id)
+	if result.Error != nil && errors.Is(result.Error, gorm.ErrRecordNotFound) { //no book db error
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
+		fmt.Println("db error while retrieving book id:", id, " to delete it. Book doesn't exist.")
+		return
+	} else if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) { //other db error
+		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
+		fmt.Println("db error while retrieving book id:", id, " to delete it. Error was: ", result.Error.Error())
+		return
+	}
+
+	//delete book
+	result = db.Delete(&Book{}, idparse)
+	if result.Error != nil { //no book db error
+		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
+		fmt.Println("db error while retrieving book id:", id, " to delete it.")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": fmt.Sprintf("deleted book id:%v", id)})
+	fmt.Printf("deletebook deleted book id:%v . sent client response", id)
 }
 
 /*
@@ -87,7 +153,6 @@ func getbook (){
 
 }
 
-func deletebook {}
 
 func updatebookpatch {}
 
@@ -136,14 +201,13 @@ func main() { // setup router and api
 	r.GET("/", test)
 	r.POST("/api/createbook", createbook)
 	r.GET("/api/getbooks/", getbooks)
-	r.PUT("/api/updatebook/{id}", updatebookput)
+	r.PUT("/api/updatebook/:id", updatebookput)
+	r.DELETE("/api/deletebook/:id", deletebook)
 	/*
 
-
-	   r.DELETE("/api/deletebook/{id}", deletebook)
-	   r.PATCH("/api/updatebook/patch/{id}", updatebookpatch)
+	   r.PATCH("/api/updatebook/:id", updatebookpatch)
 	*/
-	//r.GET("/api/getbook/{id}", getbook)
+	//r.GET("/api/getbook/:id", getbook)
 
 	/* test
 	   s := "This,is,a,delimited,string"
