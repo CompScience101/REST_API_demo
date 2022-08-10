@@ -18,11 +18,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// Book struct (Model)
+// Book struct (Model for other)
 type Book struct {
-	Isbn   string `json:"isbn" binding: "required"`
-	Title  string `json:"title" binding: "required"`
-	Author string `json:"author_name" binding: "required"`
+	Isbn   string `json:"isbn" binding:"required"`
+	Title  string `json:"title" binding:"required"`
+	Author string `json:"author_name" binding:"required"`
+	gorm.Model
+	//DateCreated string `json:"date_created"`
+}
+
+// Book struct (Model for patch)
+type BookPatch struct {
+	Isbn   string `json:"isbn" `
+	Title  string `json:"title"`
+	Author string `json:"author_name"`
 	gorm.Model
 	//DateCreated string `json:"date_created"`
 }
@@ -41,7 +50,8 @@ func test(c *gin.Context) {
 
 func createbook(c *gin.Context) { //not worrying about rejecting duplicate books, since library can have duplicates
 	var myjson Book
-	if err := c.BindJSON(&myjson); err != nil {
+	if err := c.ShouldBindJSON(&myjson); err != nil {
+		//fmt.Printf("c.ShouldBindJSON(&myjson) err:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
 		fmt.Printf("Createbook invalid request")
 		return
@@ -71,22 +81,17 @@ func getbooks(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, books)
 	fmt.Printf("retrieved all books. sent client response \n")
-	return
 }
-func updatebookput(c *gin.Context) {
+func getbook(c *gin.Context) {
 	var myjson Book
-	if err := c.BindJSON(&myjson); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
-		fmt.Printf("Updatebook invalid request error: %v", err)
-		return
-	}
+
 	//convert id
 	id := c.Param("id")
 	idparse, err := strconv.ParseUint(id, 10, 32)
 	myjson.ID = uint(idparse)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Please send a int for book id, for updating book."})
-		fmt.Println("Incorrect book id formatting, for updating book. error ", string(err.Error()))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please send a int for book id, for reading up single book."})
+		fmt.Println("Incorrect book id formatting, for reading single book. error ", string(err.Error()))
 	}
 
 	//find book
@@ -94,11 +99,46 @@ func updatebookput(c *gin.Context) {
 	result := db.First(&mybook, id)
 	if result.Error != nil && errors.Is(result.Error, gorm.ErrRecordNotFound) { //no book db error
 		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
-		fmt.Println("db error while retrieving book id:", id, " to update it. Book doesn't exist.")
+		fmt.Println("db error while retrieving book id:", id, " to read it. Book doesn't exist. Error was: ", result.Error.Error())
 		return
 	} else if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) { //other db error
 		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
-		fmt.Println("db error while retrieving book id:", id, " to update it. Error was: ", result.Error.Error())
+		fmt.Println("db error while retrieving book id:", id, " to read it. Error was: ", result.Error.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, mybook)
+	fmt.Printf("getbook read book. sent client response")
+
+}
+
+func updatebookput(c *gin.Context) {
+	var myjson Book
+
+	if err := c.ShouldBindJSON(&myjson); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
+		fmt.Printf("updatebookput invalid request error: %v", err)
+		return
+	}
+	//convert id
+	id := c.Param("id")
+	idparse, err := strconv.ParseUint(id, 10, 32)
+	myjson.ID = uint(idparse)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please send a int for book id, for updating(PUT) book."})
+		fmt.Println("Incorrect book id formatting, for updating(PUT) book. error: ", string(err.Error()))
+	}
+
+	//find book
+	var mybook Book
+	result := db.First(&mybook, id)
+	if result.Error != nil && errors.Is(result.Error, gorm.ErrRecordNotFound) { //no book db error
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
+		fmt.Println("db error while retrieving book id:", id, " to update(PUT) it. Book doesn't exist. Error was: ", result.Error.Error())
+		return
+	} else if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) { //other db error
+		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
+		fmt.Println("db error while retrieving book id:", id, " to update(PUT) it. Error was: ", result.Error.Error())
 		return
 	}
 
@@ -110,6 +150,48 @@ func updatebookput(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, myjson)
 	fmt.Printf("updatebookput updated book. sent client response")
+
+}
+
+func updatebookpatch(c *gin.Context) {
+	var myjson BookPatch
+
+	if err := c.ShouldBindJSON(&myjson); err != nil { //note: gorm will update db record even if user uses a emtpy json object
+		c.JSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
+		fmt.Printf("updatebookpatch invalid request error: %v", err)
+		return
+	}
+	//fmt.Printf("myjson:", myjson)//check if json object is empty
+	//convert id
+	id := c.Param("id")
+	idparse, err := strconv.ParseUint(id, 10, 32)
+	myjson.ID = uint(idparse)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please send a int for book id, for updating(PATCH) book."})
+		fmt.Println("Incorrect book id formatting, for updating(PATCH) book. error ", string(err.Error()))
+	}
+
+	//find book
+	var mybook Book
+	result := db.First(&mybook, id)
+	if result.Error != nil && errors.Is(result.Error, gorm.ErrRecordNotFound) { //no book db error
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
+		fmt.Println("db error while retrieving book id:", id, " to update(PATCH) it. Book doesn't exist.")
+		return
+	} else if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) { //other db error
+		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
+		fmt.Println("db error while retrieving book id:", id, " to update(PATCH) it. Error was: ", result.Error.Error())
+		return
+	}
+
+	result = db.Model(&mybook).Updates(&myjson)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
+		fmt.Printf("updatebookpatch internal error while updating book in db")
+		return
+	}
+	c.JSON(http.StatusOK, mybook)
+	fmt.Printf("updatebookpatch updated book. sent client response")
 
 }
 
@@ -148,51 +230,6 @@ func deletebook(c *gin.Context) {
 	fmt.Printf("deletebook deleted book id:%v . sent client response", id)
 }
 
-/*
-func getbook (){
-
-}
-
-
-func updatebookpatch {}
-
-func transaction (c *gin.Context){ // process customer transaction
-	var myjson MyTransaction
-	if c.BindJSON(&myjson) != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid payment, please make sure you use a integer with no decimal places."})
-		fmt.Printf("invalid payment, user needs to instead use a integer with no decimal places.")
-		return
-	}
-	fmt.Printf("sending cost to calculate function %d", myjson.Cost )
-	points := calculateTransaction(myjson.Cost)
-	c.JSON(http.StatusCreated, gin.H{"reward": points})
-	fmt.Printf("sent reward client %d  points \n", points )
-	return
-	//c.Data(200, "application/json; charset=utf-8", []byte(string(dat)))
-}
-
-func calculateTransaction (cost int64)(int64) { // calculate customer reward points
-    fmt.Printf("cost before conversion %d \n", cost )
-    //convertedCost, err := strconv.Atoi(cost)
-	//fmt.Printf("convertedCost after conversion %d  \n", convertedCost )
-	var first = ((cost - 50) * 1)
-	var second =  ((cost - 100) * 1)
-	if first < 0 {//account for less than 50 dollars spent
-		first = 0
-	}
-	if second < 0{ // account for less than 100 dollars spent
-		second = 0
-	}
-	var total = first + second
-	fmt.Printf("rewarded client %d  total \n", total )
-	if total >= 1 {
-		return total
-	}
-	return 0
-}
-
-*/
-
 func main() { // setup router and api
 
 	r := gin.Default()
@@ -201,13 +238,10 @@ func main() { // setup router and api
 	r.GET("/", test)
 	r.POST("/api/createbook", createbook)
 	r.GET("/api/getbooks/", getbooks)
+	r.GET("/api/getbook/:id", getbook)
 	r.PUT("/api/updatebook/:id", updatebookput)
+	r.PATCH("/api/updatebook/:id", updatebookpatch)
 	r.DELETE("/api/deletebook/:id", deletebook)
-	/*
-
-	   r.PATCH("/api/updatebook/:id", updatebookpatch)
-	*/
-	//r.GET("/api/getbook/:id", getbook)
 
 	/* test
 	   s := "This,is,a,delimited,string"
