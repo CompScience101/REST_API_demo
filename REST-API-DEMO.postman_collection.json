@@ -152,6 +152,45 @@
 			]
 		},
 		{
+			"name": "Single book",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "Single book",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/getbook/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"getbook",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": null
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n    \"isbn\": \"ahuoeiojio\",\r\n    \"title\": \"The Incredible Hulk\",\r\n    \"author_name\": \"Silver Surfer\",\r\n    \"ID\": 13,\r\n    \"CreatedAt\": \"2022-08-11T12:05:49.019444-04:00\",\r\n    \"UpdatedAt\": \"2022-08-11T12:05:49.019444-04:00\",\r\n    \"DeletedAt\": null\r\n}"
+				}
+			]
+		},
+		{
 			"name": "Update Book",
 			"request": {
 				"method": "PUT",
@@ -183,14 +222,20 @@
 							"raw": "{\"isbn\": \"ajdkljklajdljlsdlkfj\", \"title\": \"Greatest Cartoon Book\",\"author_name\": \"Stanley Lee\"}"
 						},
 						"url": {
-							"raw": "{{local}}/api/updatebook/2",
+							"raw": "{{local}}/api/updatebook/:id",
 							"host": [
 								"{{local}}"
 							],
 							"path": [
 								"api",
 								"updatebook",
-								"2"
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": null
+								}
 							]
 						}
 					},
@@ -200,6 +245,72 @@
 					"header": null,
 					"cookie": [],
 					"body": "{\r\n    \"isbn\": \"ajdkljklajdljlsdlkfj\",\r\n    \"title\": \"Greatest Cartoon Book\",\r\n    \"author_name\": \"Stanley Lee\",\r\n    \"ID\": 2,\r\n    \"CreatedAt\": \"0001-01-01T00:00:00Z\",\r\n    \"UpdatedAt\": \"2022-08-09T14:53:25.4136633-04:00\",\r\n    \"DeletedAt\": null\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Update Book",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{local}}/api/updatebook/1",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"api",
+						"updatebook",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Update Book",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"title\": \"The Incredible Hulk\",\r\n    \"author_name\": \"Silver Surfer\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/updatebook/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"updatebook",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": null
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n    \"isbn\": \"ahuoeiojio\",\r\n    \"title\": \"The Incredible Hulk\",\r\n    \"author_name\": \"Silver Surfer\",\r\n    \"ID\": 12,\r\n    \"CreatedAt\": \"2022-08-11T11:50:55.931572-04:00\",\r\n    \"UpdatedAt\": \"2022-08-11T11:53:36.3829322-04:00\",\r\n    \"DeletedAt\": null\r\n}"
 				}
 			]
 		},
@@ -220,7 +331,30 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Delete Book",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/deletebook/2",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"deletebook",
+								"2"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
 		}
 	]
 }

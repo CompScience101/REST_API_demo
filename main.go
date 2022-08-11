@@ -74,7 +74,7 @@ func getbooks(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": string(result.Error.Error())})
 		fmt.Printf("db error while retrieving all books")
 		return
-	} else if books == nil {
+	} else if len(books) == 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "no records available"})
 		fmt.Printf("db error, no books while retrieving all books")
 		return
