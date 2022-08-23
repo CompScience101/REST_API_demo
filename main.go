@@ -20,18 +20,18 @@ import (
 
 // Book struct (Model for other)
 type Book struct {
-	Isbn   string `json:"isbn" binding:"required"`
-	Title  string `json:"title" binding:"required"`
-	Author string `json:"author_name" binding:"required"`
+	Isbn   string `json:"isbn" binding:"required" gorm:"not null"`
+	Title  string `json:"title" binding:"required" gorm:"not null"`
+	Author string `json:"author_name" binding:"required" gorm:"not null"`
 	gorm.Model
 	//DateCreated string `json:"date_created"`
 }
 
 // Book struct (Model for patch)
 type BookPatch struct {
-	Isbn   string `json:"isbn" `
-	Title  string `json:"title"`
-	Author string `json:"author_name"`
+	Isbn   string `json:"isbn" gorm:"not null"`
+	Title  string `json:"title" gorm:"not null"`
+	Author string `json:"author_name" gorm:"not null"`
 	gorm.Model
 	//DateCreated string `json:"date_created"`
 }
@@ -156,11 +156,25 @@ func updatebookput(c *gin.Context) {
 func updatebookpatch(c *gin.Context) {
 	var myjson BookPatch
 
-	if err := c.ShouldBindJSON(&myjson); err != nil { //note: gorm will update db record even if user uses a emtpy json object
+	if err := c.ShouldBindJSON(&myjson); err != nil { //note: gorm will update db record even if user uses a emtpy json object, and will also update if {"test":"woiane"} is used
 		c.JSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
 		fmt.Printf("updatebookpatch invalid request error: %v", err)
 		return
 	}
+	// var emptyobjectcheck BookPatch
+	// byt, err := ioutil.ReadAll(c.Request.Body)
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Possible no json detected while updating(PATCH) Book, please add the required json object and json fields."})
+	// 	fmt.Println("error no json detected during updatepatch, please add the required json and json fields.")
+	// 	return
+	// }
+	// if err := json.Unmarshal(byt, &emptyobjectcheck); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Possible either empty json object detected while updating(PATCH) Book, please add the required json fields. Or you have tried to use invalid json fields, please delete the invalid fields."})
+	// 	fmt.Println("error possible either empty json object during updatepatch, please add the required json fields. Or possible you have added invalid json fields, please delete them.")
+	// 	return
+	// 	//panic(err)
+	// }
+
 	//fmt.Printf("myjson:", myjson)//check if json object is empty
 	//convert id
 	id := c.Param("id")

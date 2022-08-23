@@ -1,0 +1,37 @@
+name: CI/CD for REST API demo for resume professional jobs
+
+#uncomment push event code after project is done for portfolio/resume
+#on: 
+  #push:
+   # branches:
+    #  - master
+env:
+    HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    HEROKU_APP: ${{ secrets.HEROKU_APP }} 
+    
+jobs:
+  myci:
+    runs-on: ubuntu-latest
+    container: 
+      image: golang:latest
+    steps:
+      - uses: actions/checkout@v2
+      #- uses: actions/setup-go@v2
+         #with:
+           #go-version: 1.18
+      - run: pwd
+      #- run: go mod verify
+      - run: go build -v ./...
+      
+  deploy:
+    needs: myci
+    runs-on: ubuntu-latest
+    container:
+      image: ruby:latest
+    steps: 
+      - uses: actions/checkout@v2
+      - run: apt-get update -qy
+      - run: apt-get install -y ruby-dev
+      - run: gem install dpl
+      - run: dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
+  
