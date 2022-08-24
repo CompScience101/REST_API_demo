@@ -1,6 +1,6 @@
 # Assessment Test REST API
 
-> My REST API to implement Book Library program.
+> My REST API to implement a Book Library program.
 
 ## Testing golang REST API on my Heroku account
 1. Visit url https://rest-api-my-demo.herokuapp.com . If you are testing the API directly then add the path that you wish to test via your client. If your client is Postman, then you can use and import my collection that I uploaded titled "REST-API-DEMO.postman_collection.json" to your Postman client.
@@ -31,6 +31,7 @@
   server if it is not available. Use http://localhost:8080/api/health to communicate from the client to the api.
 
 ## Endpoints
+- This API uses the seven main HTTP methods; GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS
 
 ### Get Health
 ``` bash
