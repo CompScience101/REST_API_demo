@@ -38,28 +38,152 @@
 # URL: api/health
 # Method: HEAD
 # HTTP/1.1
+
 # Response sample
-# code: 200
+# code: 204
 # content: n/a
 ```
 
-### Create Transaction
+### Create Book
 ``` bash
-# URL: api/transaction 
-# Method:POST 
+# URL: api/createbook
+# Method: POST 
 # HTTP/1.1
 
 # Request sample
 # {
-#   "cost": 120,
+#    "isbn": "ajdkljklajdljlsdlkfj",
+#    "title": "Greatest Cook on Earth",
+#    "author_name": "Stanley Lee",
 # }
 
 # Response sample
 # Code: 201
 # Content: {
-#   reward: 90
+#    "isbn": "ajdkljklajdljlsdlkfj",
+#    "title": "Greatest Cook on Earth",
+#    "author_name": "Stanley Lee",
+#    "ID": 2,
+#    "CreatedAt": "2022-08-07T21:19:14.8213596-04:00",
+#    "UpdatedAt": "2022-08-07T21:19:14.8213596-04:00",
+#    "DeletedAt": null
 # }
 ```
+
+### Get BookList
+``` bash
+# URL: api/getbooks 
+# Method: READ 
+# HTTP/1.1
+
+# Response sample
+# Code: 200
+# [
+#     {
+#         "isbn": "ajdkljklajdljlsdlkfj",
+#         "title": "Greatest Cook on Earth",
+#         "author_name": "Tony Stark",
+#         "ID": 1,
+#         "CreatedAt": "2022-08-07T21:18:51.994608-04:00",
+#         "UpdatedAt": "2022-08-07T21:18:51.994608-04:00",
+#         "DeletedAt": null
+#     },
+#     {
+#         "isbn": "ajdkljklajdljlsdlkfj",
+#         "title": "Greatest Cook on Earth",
+#         "author_name": "Stanley Lee",
+#         "ID": 2,
+#         "CreatedAt": "2022-08-07T21:19:14.821359-04:00",
+#         "UpdatedAt": "2022-08-07T21:19:14.821359-04:00",
+#         "DeletedAt": null
+#     }
+# ]
+```
+
+### Get Single Book
+``` bash
+# URL: api/getbook/:id
+# Method: GET 
+# HTTP/1.1
+
+# Response sample
+# Code: 200
+# Content: {
+#     "isbn": "ahuoeiojio",
+#     "title": "The Incredible Hulk",
+#     "author_name": "Silver Surfer",
+#     "ID": 13,
+#     "CreatedAt": "2022-08-11T12:05:49.019444-04:00",
+#     "UpdatedAt": "2022-08-11T12:05:49.019444-04:00",
+#     "DeletedAt": null
+# }
+```
+
+
+### Update Whole Book
+``` bash
+# URL: api/updatebook/:id
+# Method: PUT 
+# HTTP/1.1
+
+# Request sample
+# {
+#    "isbn": "ajdkljklajdljlsdlkfj", 
+#    "title": "Greatest Cartoon Book",
+#    "author_name": "Stanley Lee"
+#  }
+
+# Response sample
+# Code: 200
+# Content: {
+#    "isbn": "ajdkljklajdljlsdlkfj",
+#    "title": "Greatest Cook on Earth",
+#    "author_name": "Stanley Lee",
+#    "ID": 2,
+#    "CreatedAt": "2022-08-07T21:19:14.8213596-04:00",
+#    "UpdatedAt": "2022-08-07T21:19:14.8213596-04:00",
+#    "DeletedAt": null
+# }
+```
+
+### Update Part of Book
+``` bash
+# URL: api/updatebook/:id
+# Method: PATCH 
+# HTTP/1.1
+
+# Request sample
+# {
+#   "title": "The Incredible Hulk",
+#    "author_name": "Silver Surfer"
+#  }
+
+# Response sample
+# Code: 200
+# Content: {
+#     "isbn": "ahuoeiojio",
+#     "title": "The Incredible Hulk",
+#     "author_name": "Silver Surfer",
+#     "ID": 12,
+#     "CreatedAt": "2022-08-11T11:50:55.931572-04:00",
+#     "UpdatedAt": "2022-08-11T11:53:36.3829322-04:00",
+#     "DeletedAt": null
+# }
+```
+
+### Delete Book
+``` bash
+# URL: api/deletebook/:id
+# Method: DELETE 
+# HTTP/1.1
+
+# Response sample
+# Code: 200
+# Content: {
+#     "success": "deleted book id:12"
+# }
+```
+
 
 ## Errors and questions
 if you run into any errors, please contact me as soon as possible by email, and I will try to help or rewrite my code.

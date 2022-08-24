@@ -75,7 +75,7 @@ func getbooks(c *gin.Context) {
 		fmt.Printf("db error while retrieving all books")
 		return
 	} else if len(books) == 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "no records available"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "no records available"})
 		fmt.Printf("db error, no books while retrieving all books")
 		return
 	}
@@ -98,7 +98,7 @@ func getbook(c *gin.Context) {
 	var mybook Book
 	result := db.First(&mybook, id)
 	if result.Error != nil && errors.Is(result.Error, gorm.ErrRecordNotFound) { //no book db error
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
+		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
 		fmt.Println("db error while retrieving book id:", id, " to read it. Book doesn't exist. Error was: ", result.Error.Error())
 		return
 	} else if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) { //other db error
@@ -133,7 +133,7 @@ func updatebookput(c *gin.Context) {
 	var mybook Book
 	result := db.First(&mybook, id)
 	if result.Error != nil && errors.Is(result.Error, gorm.ErrRecordNotFound) { //no book db error
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
+		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
 		fmt.Println("db error while retrieving book id:", id, " to update(PUT) it. Book doesn't exist. Error was: ", result.Error.Error())
 		return
 	} else if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) { //other db error
@@ -189,7 +189,7 @@ func updatebookpatch(c *gin.Context) {
 	var mybook Book
 	result := db.First(&mybook, id)
 	if result.Error != nil && errors.Is(result.Error, gorm.ErrRecordNotFound) { //no book db error
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
+		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
 		fmt.Println("db error while retrieving book id:", id, " to update(PATCH) it. Book doesn't exist.")
 		return
 	} else if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) { //other db error
@@ -223,7 +223,7 @@ func deletebook(c *gin.Context) {
 	var mybook Book
 	result := db.First(&mybook, id)
 	if result.Error != nil && errors.Is(result.Error, gorm.ErrRecordNotFound) { //no book db error
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
+		c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("No book exist with id:%v", id)})
 		fmt.Println("db error while retrieving book id:", id, " to delete it. Book doesn't exist.")
 		return
 	} else if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) { //other db error
