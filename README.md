@@ -12,6 +12,7 @@
 2. locate the "_rest_api_for_resume.exe" and double click that executable and make sure this window opens and stays open while you use the client program. NOTE: you may need to allow this file/program in your OS's firewall to run it successfully, in Windows OS you may get a "Windows Security Alert" prompt,
    please make sure the public network checkbox is selected, then choose "Allow Access" button, then click "yes" if you are prompted to allow the program to 
    make changes to the computer.
+3. Use http://localhost:8080 as the application address when consuming the REST API endpoints.
 
 
 ## Unit Testing
@@ -24,12 +25,8 @@
 
 
 ## Using Endpoints
-- When using the "Create transaction" endpoint, please make sure to provide a integer value for the "cost" field of your json.
-  Use http://localhost:8080/api/transaction to communicate from the client to the api.
-- When using the "Get Health" endpoint you don't need to pass any data, just use the url and path specified and if it succeeds
-  you will get a 200 status response along with content body of the running status, otherwise you will get no response from 
-  server if it is not available. Use http://localhost:8080/api/health to communicate from the client to the api.
-
+- Please use the json formatting referenced in the examples below for your data entries. If you test the API
+  
 ## Endpoints
 - This API uses the seven main HTTP methods; GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS
 
