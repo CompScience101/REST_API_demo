@@ -2,10 +2,14 @@
 
 > My REST API to implement Book Library program.
 
-## Running golang REST API without go docker container (option #1)
-1. Copy "assessment_test_5_9_2022.exe" to local hard drive.
-2. locate the "assessment_test_5_9_2022.exe" and double click that executable and make sure this window opens and stays open while you use the client program
-   file, NOTE: you may need to allow this file/program in your OS's firewall to run it successfully, in Windows OS you may get a "Windows Security Alert" prompt,
+## Testing golang REST API on my Heroku account
+1. Visit url https://rest-api-my-demo.herokuapp.com . If you are testing the API directly then add the path that you wish to test via your client. If your client is Postman, then you can use and import my collection that I uploaded titled "REST-API-DEMO.postman_collection.json" to your Postman client.
+
+## Testing golang REST API locally (option #1)
+1. Two options for running the REST API locally;
+   - Copy "_rest_api_for_resume.exe" from this repository to your local hard drive, or 
+   - Download Golang environment locally and download my repository(title the local project folder "_rest_api_for_resume") locally. Then from command line run: go get && go build. local port is 8080.
+2. locate the "_rest_api_for_resume.exe" and double click that executable and make sure this window opens and stays open while you use the client program. NOTE: you may need to allow this file/program in your OS's firewall to run it successfully, in Windows OS you may get a "Windows Security Alert" prompt,
    please make sure the public network checkbox is selected, then choose "Allow Access" button, then click "yes" if you are prompted to allow the program to 
    make changes to the computer.
 
