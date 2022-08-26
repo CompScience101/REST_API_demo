@@ -49,9 +49,46 @@ func TestCreateBookRoute(t *testing.T) { //Ensure createbook test occurs before 
 	var resp Book
 	json.Unmarshal([]byte(w.Body.Bytes()), &resp)
 	bookid = resp.ID
+	fmt.Println("bookid:", bookid, "resp.ID:", resp.ID)
 	assert.Equal(t, myjson.Isbn, resp.Isbn)
 	assert.Equal(t, myjson.Author, resp.Author)
 	assert.Equal(t, myjson.Title, resp.Title)
+	//assert.Equal(t, "pong", w.Body.String())
+}
+
+func TestGetBookRoute(t *testing.T) {
+	//router := setupRouter()
+
+	w := httptest.NewRecorder()
+	//request
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/api/getbook/%v", bookid), nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, 200, w.Code)
+	var resp Book
+	json.Unmarshal([]byte(w.Body.Bytes()), &resp)
+	assert.Equal(t, bookid, resp.ID)
+	fmt.Println("bookid:", bookid, " resp id:", resp.ID) //global variable test works!
+	//assert.Equal(t, "pong", w.Body.String())
+}
+func TestGetBooksRoute(t *testing.T) {
+	//router := setupRouter()
+
+	w := httptest.NewRecorder()
+	//request
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/api/getbooks/"), nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, 200, w.Code)
+	var resp []Book
+	json.Unmarshal([]byte(w.Body.Bytes()), &resp)
+	for _, service := range resp {
+		if service.ID == bookid {
+			assert.Equal(t, bookid, service.ID)
+			fmt.Println("bookid:", bookid, " resp id:", service.ID) //global variable test works!
+			break
+		}
+	}
 	//assert.Equal(t, "pong", w.Body.String())
 }
 
@@ -106,7 +143,7 @@ func TestUpdatePATCHRoute(t *testing.T) {
 	assert.Equal(t, myjson.Author, resp.Author)
 	assert.Equal(t, myjson.Title, resp.Title)
 	assert.Equal(t, bookid, resp.ID) //uint(10)
-	//fmt.Println("bookid:", bookid, " respid:", resp.ID)//global variable test works!
+	//fmt.Println("bookid:", bookid, " resp id:", resp.ID)//global variable test works!
 	//assert.Equal(t, "pong", w.Body.String())
 }
 
@@ -125,27 +162,10 @@ func TestDeleteRoute(t *testing.T) {
 	var resp myResponse
 	json.Unmarshal([]byte(w.Body.Bytes()), &resp)
 	assert.Equal(t, fmt.Sprintf("deleted book id:%v", bookid), resp.Success)
-	//fmt.Println("bookid:", bookid, " respid:", resp.ID)//global variable test works!
+	//fmt.Println("bookid:", bookid, " resp id:", resp.ID)//global variable test works!
 	//assert.Equal(t, "pong", w.Body.String())
 }
 
-/*
-func TestGetBookRoute(t *testing.T) {
-	//router := setupRouter()
-
-	w := httptest.NewRecorder()
-	//request
-	req, _ := http.NewRequest("GET", fmt.Sprintf("/api/getbook/%v", bookid), nil)
-	router.ServeHTTP(w, req)
-
-	assert.Equal(t, 200, w.Code)
-	var resp Book
-	json.Unmarshal([]byte(w.Body.Bytes()), &resp)
-	assert.Equal(t, fmt.Sprintf("deleted book id:%v", bookid), resp.ID)
-	//fmt.Println("bookid:", bookid, " respid:", resp.ID)//global variable test works!
-	//assert.Equal(t, "pong", w.Body.String())
-}
-*/
 func TestCalculateTransaction1(t *testing.T) { // test transaction with $120.00
 	//var test int64 = 120
 	//points := calculateTransaction(test)
