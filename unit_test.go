@@ -76,13 +76,13 @@ func TestUpdatePUTRoute(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 	var resp Book
 	json.Unmarshal([]byte(w.Body.Bytes()), &resp)
+	assert.Equal(t, myjson.Isbn, resp.Isbn)
 	assert.Equal(t, myjson.Author, resp.Author)
 	assert.Equal(t, myjson.Title, resp.Title)
 	assert.Equal(t, bookid, resp.ID) //uint(10)
 	//assert.Equal(t, "pong", w.Body.String())
 }
 
-/*
 func TestUpdatePATCHRoute(t *testing.T) {
 	//router := setupRouter()
 
@@ -109,24 +109,13 @@ func TestUpdatePATCHRoute(t *testing.T) {
 	//fmt.Println("bookid:", bookid, " respid:", resp.ID)//global variable test works!
 	//assert.Equal(t, "pong", w.Body.String())
 }
-*/
-/*
+
 func TestDeleteRoute(t *testing.T) {
 	//router := setupRouter()
 
 	w := httptest.NewRecorder()
-	//create book
-	var myjson BookPatch
-	myjson.Isbn = "itoghwljdlkdsklfjkljsda"
-	myjson.Title = "the football league"
-	myjson.Author = "Star Trek"
-	data, err := json.Marshal(myjson)
-	if err != nil {
-		log.Fatal(err)
-	}
-	reader := bytes.NewReader(data) //convert myjson to bytes then io.Reader
 	//request
-	req, _ := http.NewRequest("PATCH", fmt.Sprintf("/api/updatebook/%v", bookid), reader)
+	req, _ := http.NewRequest("DELETE", fmt.Sprintf("/api/deletebook/%v", bookid), nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
@@ -139,7 +128,7 @@ func TestDeleteRoute(t *testing.T) {
 	//fmt.Println("bookid:", bookid, " respid:", resp.ID)//global variable test works!
 	//assert.Equal(t, "pong", w.Body.String())
 }
-*/
+
 /*
 func TestGetBookRoute(t *testing.T) {
 	//router := setupRouter()
