@@ -7,6 +7,7 @@ on:
 env:
     HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     HEROKU_APP: ${{ secrets.HEROKU_APP }} 
+    DATABASE_URL: ${{ secrets.DATABASE_URL }}
     
 jobs:
   mycicd:
