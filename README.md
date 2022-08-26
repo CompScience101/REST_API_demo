@@ -16,6 +16,7 @@
 
 
 ## Unit Testing
+The Golang REST API Unit tests are end to end tests for API only.
 1. copy my code(all files) to your local hard drive.
 2. make sure go lang environment is installed on your local machine
 3. open your OS's command line prompt and change directory to the directory that you put my code
