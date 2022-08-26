@@ -20,7 +20,7 @@ import (
 
 // Book struct (Model for other)
 type Book struct {
-	Isbn   string `json:"isbn" binding:"required" gorm:"not null"`
+	Isbn   string `json:"isbn" binding:"required" gorm:"not null"` //remember no spaces between each struct tag key-value pair
 	Title  string `json:"title" binding:"required" gorm:"not null"`
 	Author string `json:"author_name" binding:"required" gorm:"not null"`
 	gorm.Model
@@ -243,9 +243,8 @@ func deletebook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": fmt.Sprintf("deleted book id:%v", id)})
 	fmt.Printf("deletebook deleted book id:%v . sent client response", id)
 }
-
-func main() { // setup router and api
-
+func setupRouter() *gin.Engine { //call everything here to avoid calling main
+	db = setupDB()
 	r := gin.Default()
 	r.Use(cors.Default())
 	r.HEAD("/api/health/", health)
@@ -257,6 +256,9 @@ func main() { // setup router and api
 	r.PATCH("/api/updatebook/:id", updatebookpatch)
 	r.DELETE("/api/deletebook/:id", deletebook)
 
+	return r
+}
+func setupDB() *gorm.DB {
 	/* test
 	   s := "This,is,a,delimited,string"
 	   v := strings.Split(s, ",")
@@ -326,7 +328,7 @@ func main() { // setup router and api
 
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=require TimeZone=America/New_York", v6, v2, v5, v8, v7)
 	var err error
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	mydb, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	//fmt.Printf("gorm db type %T",db)
 	fmt.Println("dsn ", dsn)
 	fmt.Println("DB_HOST ", os.Getenv("DB_HOST"), " DB_USER ", os.Getenv("DB_USER"), " DB_PASSWORD ", os.Getenv("DB_PASSWORD"), " DB_NAME ", os.Getenv("DB_NAME"), " DB_PORT ", os.Getenv("DB_PORT"))
@@ -336,29 +338,33 @@ func main() { // setup router and api
 	}
 	fmt.Println("db connection made")
 
-	bool := db.Migrator().HasTable(&Book{}) //check status
+	bool := mydb.Migrator().HasTable(&Book{}) //check status
 	if bool == true {
 
 		fmt.Println("already created db table(s)")
 	} else {
-		db.Migrator().CreateTable(&Book{})
-		bool := db.Migrator().HasTable(&Book{})
+		mydb.Migrator().CreateTable(&Book{})
+		bool := mydb.Migrator().HasTable(&Book{})
 		if bool == true {
 			fmt.Println("created db table(s)")
 		} else {
 			fmt.Println("failed to create db table(s)")
 		}
 	}
-
 	/* delete old table
-	db.Migrator().DropTable(&Book{})
-	bool := db.Migrator().HasTable(&Book{})
+	mydb.Migrator().DropTable(&Book{})
+	bool := mydb.Migrator().HasTable(&Book{})
 	if bool == true {
 		fmt.Println("db table(s) still exist")
 	} else {
 		fmt.Println("deleted db table(s)")
 	}
 	*/
+	return mydb
+}
+
+func main() { // setup router and api
+	r := setupRouter()
 	fmt.Println("preparing router")
 	port := os.Getenv("PORT")
 	if port == "" { //heroku assignment fail
