@@ -29,6 +29,7 @@
   
 ## Endpoints
 - This API uses the seven main HTTP methods; GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS
+- Also this API implements input validation in the API.
 
 ### Get Health
 ``` bash
